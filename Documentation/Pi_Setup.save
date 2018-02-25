@@ -1,0 +1,32 @@
+Hardware Setup Guide Located at: https://www.raspberrypi.org/learning/hardware-guide/
+Software Setup Guide Located at: https://www.raspberrypi.org/learning/software-guide/
+
+Items Needed:
+1. SD Card(8GB Minimum)
+2. Keyboard
+3. Mouse
+4. HDMI Cable
+5. Monitor
+6. Power Supply(Micro-USB)
+
+Steps:
+1. Format SD Card using Formattor 5.0 (https://www.sdcard.org/downloads/formatter_4/)
+2. Download NOOBS (https://www.raspberrypi.org/downloads/noobs/)
+3. Unzip NOOBS and move the contents of the unzipped folder to the SD Card
+4. Plug in Keyboard, Mouse, and Monitor(via USB Ports)
+5. Insert Formatted SD Card
+6. Plug in power Supply
+7. Install OS
+
+Additional Configuration Steps:
+1. Open Preferences -> Raspberry Pi Configuration -> Localisation
+2. Set Locale (e.g. Language: en (English), Country: US (United States), Character Set: UTF-8) 
+3. Set Timezone (e.g. Area: America, Location: Chicago)
+4. Set Keyboard (e.g. Country: United States, Variant: English (US))
+5. Set WiFi Country (e.g. US  United States)
+
+Additional Information:
+If the Wifi disconnects and states that wlan0 disassociates from your network,
+open a Terminal and run the following command: sudo iwconfig wlan0 power off 
+This is a feature of the power saving function of the Raspberry Pi 3. 
+Ensure your power supply is properly connected and usable.
