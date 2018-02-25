@@ -18,6 +18,13 @@ Steps:
 6. Plug in power Supply
 7. Install OS
 
+To use Make:
+1. run the command: apt-get install bc
+2. run the command: sudo wget https://raw.githubusercontent.com/notro/rpi-source/master/rpi-source -O /usr/bin/rpi-source && sudo chmod +x /usr/bin/rpi-source && /usr/bin/rpi-source -q --tag-update
+3. run the command: rpi-source
+4. If you get a gcc version check error, you can safely ignore it with: --skip-gcc
+provided your gcc is installed to the latest version
+
 Additional Configuration Steps:
 1. Open Preferences -> Raspberry Pi Configuration -> Localisation
 2. Set Locale (e.g. Language: en (English), Country: US (United States), Character Set: UTF-8) 
@@ -32,5 +39,4 @@ Additional Information:
 open a Terminal and run the following command: sudo iwconfig wlan0 power off 
 This is a feature of the power saving function of the Raspberry Pi 3. 
 Ensure your power supply is properly connected and usable.
-
 
