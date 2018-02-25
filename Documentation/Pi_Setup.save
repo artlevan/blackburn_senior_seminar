@@ -26,7 +26,11 @@ Additional Configuration Steps:
 5. Set WiFi Country (e.g. US  United States)
 
 Additional Information:
-If the Wifi disconnects and states that wlan0 disassociates from your network,
+-To setup the root password open a terminal and run the following command: sudo passwd root
+
+-If the Wifi disconnects and states that wlan0 disassociates from your network,
 open a Terminal and run the following command: sudo iwconfig wlan0 power off 
 This is a feature of the power saving function of the Raspberry Pi 3. 
 Ensure your power supply is properly connected and usable.
+
+
