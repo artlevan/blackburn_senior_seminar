@@ -1,0 +1,37 @@
+Final Product:
+
+Description:
+A device that will prevent alteration of a connected USB's memory and files.
+Built using a Raspberry Pi 3 Model B as the base machine, operating with Raspbian as the OS.
+Functionality is made up of varying Modules, which can be used through executing Script Commands.
+
+Components:
+
+-Hardware:
+Raspberry Pi 3 Model B
+Monitor
+Keyboard
+Mouse
+HDMI Cable
+USB (2.0)
+
+-Software:
+MountIt.sh (Script that creates a directory and mounts a specified Device there)
+UnMountIt.sh (Unmounts from the Location created in MountIt.sh)
+usbmon (kernel module that sniffs I/O from USB interfaces)
+WriteBlockOn (Script to activate write blocking to a specified device)
+WriteBlockOff (Script to deactivate write blocking to a specified device)
+rpi-source (provides kernel headers needed to use Make Files)
+
+Tests:
+-Collect md5 and sha-1 hashes of the mounted device before and after is blocked
+-Collect and Store access times on files located on the USB
+-?
+
+Documentation:
+-Pi Setup Instructions
+-Research Papers
+-Seminar Proposal
+
+Timeline:
+-TBD
