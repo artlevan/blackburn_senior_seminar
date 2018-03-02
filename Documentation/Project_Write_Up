@@ -7,7 +7,7 @@ Functionality is made up of varying Modules, which can be used through executing
 
 Components:
 
--Hardware:
+Hardware:
 Raspberry Pi 3 Model B
 Monitor
 Keyboard
@@ -15,7 +15,7 @@ Mouse
 HDMI Cable
 USB (2.0)
 
--Software:
+Software:
 MountIt.sh (Script that creates a directory and mounts a specified Device there)
 UnMountIt.sh (Unmounts from the Location created in MountIt.sh)
 usbmon (kernel module that sniffs I/O from USB interfaces)
