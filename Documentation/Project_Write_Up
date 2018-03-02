@@ -24,8 +24,8 @@ WriteBlockOff (Script to deactivate write blocking to a specified device)
 rpi-source (provides kernel headers needed to use Make Files)
 
 Tests:
--Collect md5 and sha-1 hashes of the mounted device before and after is blocked
--Collect and Store access times on files located on the USB
+-Collect md5 and sha-1 hashes of the mounted device before and after it is blocked
+-Store and Compare access times on files located on the USB
 -?
 
 Documentation:
