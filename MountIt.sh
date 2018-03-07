@@ -7,6 +7,6 @@ sudo mkdir /media/usb/$varName
 
 echo -e "Please enter the partition name (i.e. /dev/sdb1)"
 read devName
-sudo mount -ro $devName /media/usb/$varName
+sudo mount -r $devName /media/usb/$varName
 
 echo "Mounted $devName at /media/usb/$varName"
