@@ -394,83 +394,71 @@ static int usb_stor_control_thread1(void * __us)
                         printk("Write_6\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
                 }//Testing a theory..
                 else if (us->srb->cmnd[0] == FORMAT_UNIT) {
 		        printk("FORMAT_UNIT\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
                 }
                 //Testing a theory..
                 else if (us->srb->cmnd[0] == WRITE_FILEMARKS) {
                         printk("Write_Filemarks\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
                 }
                 //Testing a theory..
                 else if (us->srb->cmnd[0] == WRITE_10) {
                         printk("Write_10\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
-                }
+               }
                 //Testing a theory..
                 else if (us->srb->cmnd[0] == WRITE_VERIFY) {
                         printk("Write_verify\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
                 }
                 //Testing a theory..
                 else if (us->srb->cmnd[0] == WRITE_BUFFER) {
                         printk("Write_Buffer\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
                 }
                 //Testing a theory..
                 else if (us->srb->cmnd[0] == WRITE_LONG) {
                         printk("Write_Long\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
                 }
                 //Testing a theory..
                 else if (us->srb->cmnd[0] == WRITE_SAME) {
                         printk("Write_Same\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
                 }
                 //Testing a theory..
                 else if (us->srb->cmnd[0] == WRITE_12) {
                         printk("Write_12\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
                 }
                 //Testing a theory..
                 else if (us->srb->cmnd[0] == WRITE_VERIFY_12) {
                         printk("Write_Verify_12\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
-                }
+               }
                 //Testing a theory..
                 else if (us->srb->cmnd[0] == 0xE1) {
                         printk("0xE1\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
                 }
                 //Testing a theory..
                 else if (us->srb->cmnd[0] == WRITE_LONG_2) {
                         printk("Write_Long_2\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                        goto SkipForAbort;
                 }
 
 		/* we've got a command, let's do it! */
