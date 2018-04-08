@@ -76,7 +76,7 @@
 #include "uas-detect.h"
 #endif
 
-#define DRV_NAME "usb1-storage"
+#define DRV_NAME "usb-storage-blocker"
 /* Some informational data */
 MODULE_AUTHOR("Arthur Levan");
 MODULE_DESCRIPTION("USB Mass Storage Write Block driver for Linux");
@@ -182,7 +182,7 @@ static void us_set_lock_class(struct mutex *mutex,
 
 #ifdef CONFIG_PM	/* Minimal support for suspend and resume */
 
-int usb_stor_suspend1(struct usb_interface *iface, pm_message_t message)
+int usb_stor_blocker_suspend(struct usb_interface *iface, pm_message_t message)
 {
 	struct us_data *us = usb_get_intfdata(iface);
 
@@ -200,9 +200,9 @@ int usb_stor_suspend1(struct usb_interface *iface, pm_message_t message)
 	mutex_unlock(&us->dev_mutex);
 	return 0;
 }
-EXPORT_SYMBOL_GPL(usb_stor_suspend1);
+EXPORT_SYMBOL_GPL(usb_stor_blocker_suspend);
 
-int usb_stor_resume1(struct usb_interface *iface)
+int usb_stor_blocker_resume(struct usb_interface *iface)
 {
 	struct us_data *us = usb_get_intfdata(iface);
 
@@ -214,9 +214,9 @@ int usb_stor_resume1(struct usb_interface *iface)
 	mutex_unlock(&us->dev_mutex);
 	return 0;
 }
-EXPORT_SYMBOL_GPL(usb_stor_resume1);
+EXPORT_SYMBOL_GPL(usb_stor_blocker_resume);
 
-int usb_stor_reset_resume1(struct usb_interface *iface)
+int usb_stor_blocker_reset_resume(struct usb_interface *iface)
 {
 	struct us_data *us = usb_get_intfdata(iface);
 
@@ -229,7 +229,7 @@ int usb_stor_reset_resume1(struct usb_interface *iface)
 	 */
 	return 0;
 }
-EXPORT_SYMBOL_GPL(usb_stor_reset_resume1);
+EXPORT_SYMBOL_GPL(usb_stor_blocker_reset_resume);
 
 #endif /* CONFIG_PM */
 
@@ -238,7 +238,7 @@ EXPORT_SYMBOL_GPL(usb_stor_reset_resume1);
  * a USB port reset, whether from this driver or a different one.
  */
 
-int usb_stor_pre_reset1(struct usb_interface *iface)
+int usb_stor_blocker_pre_reset(struct usb_interface *iface)
 {
 	struct us_data *us = usb_get_intfdata(iface);
 
@@ -246,9 +246,9 @@ int usb_stor_pre_reset1(struct usb_interface *iface)
 	mutex_lock(&us->dev_mutex);
 	return 0;
 }
-EXPORT_SYMBOL_GPL(usb_stor_pre_reset1);
+EXPORT_SYMBOL_GPL(usb_stor_blocker_pre_reset);
 
-int usb_stor_post_reset1(struct usb_interface *iface)
+int usb_stor_blocker_post_reset(struct usb_interface *iface)
 {
 	struct us_data *us = usb_get_intfdata(iface);
 
@@ -263,7 +263,7 @@ int usb_stor_post_reset1(struct usb_interface *iface)
 	mutex_unlock(&us->dev_mutex);
 	return 0;
 }
-EXPORT_SYMBOL_GPL(usb_stor_post_reset1);
+EXPORT_SYMBOL_GPL(usb_stor_blocker_post_reset);
 
 /*
  * fill_inquiry_response takes an unsigned char array (which must
@@ -274,7 +274,7 @@ EXPORT_SYMBOL_GPL(usb_stor_post_reset1);
  * data array, which again must be at least 36.
  */
 
-void fill_inquiry_response1(struct us_data *us, unsigned char *data,
+void blocker_fill_inquiry_response(struct us_data *us, unsigned char *data,
 		unsigned int data_len)
 {
 	if (data_len < 36) /* You lose. */
@@ -309,9 +309,9 @@ void fill_inquiry_response1(struct us_data *us, unsigned char *data,
 
 	usb_stor_set_xfer_buf(data, data_len, us->srb);
 }
-EXPORT_SYMBOL_GPL(fill_inquiry_response1);
+EXPORT_SYMBOL_GPL(blocker_fill_inquiry_response);
 
-static int usb_stor_control_thread1(void * __us)
+static int usb_stor_blocker_control_thread(void * __us)
 {
 	struct us_data *us = (struct us_data *)__us;
 	struct Scsi_Host *host = us_to_host(us);
@@ -389,74 +389,74 @@ static int usb_stor_control_thread1(void * __us)
 			fill_inquiry_response(us, data_ptr, 36);
 			us->srb->result = SAM_STAT_GOOD;
 		}
-		//Testing a theory..
+		//Block Write_6
                 else if (us->srb->cmnd[0] == WRITE_6) {
-                        printk("Write_6\n");
+                        printk("Blocked Write_6\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
-                }//Testing a theory..
+                }//Block Format_Unit
                 else if (us->srb->cmnd[0] == FORMAT_UNIT) {
-		        printk("FORMAT_UNIT\n");
+		        printk("Blocked FORMAT_UNIT\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
                 }
-                //Testing a theory..
+                //Block Write_Filemarks
                 else if (us->srb->cmnd[0] == WRITE_FILEMARKS) {
-                        printk("Write_Filemarks\n");
+                        printk("Blocked Write_Filemarks\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
                 }
-                //Testing a theory..
+                //Block Write_10
                 else if (us->srb->cmnd[0] == WRITE_10) {
-                        printk("Write_10\n");
+                        printk("Blocked Write_10\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
                }
-                //Testing a theory..
+                //Block Write_Verify
                 else if (us->srb->cmnd[0] == WRITE_VERIFY) {
-                        printk("Write_verify\n");
+                        printk("Blocked Write_verify\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
                 }
-                //Testing a theory..
+                //Block Write_Buffer
                 else if (us->srb->cmnd[0] == WRITE_BUFFER) {
-                        printk("Write_Buffer\n");
+                        printk("Blocked Write_Buffer\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
                 }
-                //Testing a theory..
+                //Block Write_Long
                 else if (us->srb->cmnd[0] == WRITE_LONG) {
-                        printk("Write_Long\n");
+                        printk("Blocked Write_Long\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND");
                         us->srb->result = DID_ERROR << 16;
                 }
-                //Testing a theory..
+                //Block Write_Same
                 else if (us->srb->cmnd[0] == WRITE_SAME) {
-                        printk("Write_Same\n");
+                        printk("Blocked Write_Same\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
                 }
-                //Testing a theory..
+                //Block Write_12
                 else if (us->srb->cmnd[0] == WRITE_12) {
-                        printk("Write_12\n");
+                        printk("Blocked Write_12\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
                 }
-                //Testing a theory..
+                //Block Write_Verify_12
                 else if (us->srb->cmnd[0] == WRITE_VERIFY_12) {
-                        printk("Write_Verify_12\n");
+                        printk("Blocked Write_Verify_12\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
                }
-                //Testing a theory..
+                //Block Write_Continue
                 else if (us->srb->cmnd[0] == 0xE1) {
-                        printk("0xE1\n");
+                        printk("Blocked 0xE1 -- Write Continue\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
                 }
-                //Testing a theory..
+                //Block Write_Long_2
                 else if (us->srb->cmnd[0] == WRITE_LONG_2) {
-                        printk("Write_Long_2\n");
+                        printk("Blocked Write_Long_2\n");
 			usb_stor_dbg(us, "UNAUTHORIZED WRITE COMMAND\n");
                         us->srb->result = DID_ERROR << 16;
                 }
@@ -559,7 +559,7 @@ static int associate_dev(struct us_data *us, struct usb_interface *intf)
 #define TOLOWER(x) ((x) | 0x20)
 
 /* Adjust device flags based on the "quirks=" module parameter */
-void usb_stor_adjust_quirks1(struct usb_device *udev, unsigned long *fflags)
+void usb_stor_blocker_adjust_quirks(struct usb_device *udev, unsigned long *fflags)
 {
 	char *p;
 	u16 vid = le16_to_cpu(udev->descriptor.idVendor);
@@ -576,7 +576,7 @@ void usb_stor_adjust_quirks1(struct usb_device *udev, unsigned long *fflags)
 			US_FL_NO_ATA_1X | US_FL_NO_REPORT_OPCODES |
 			US_FL_MAX_SECTORS_240 | US_FL_NO_REPORT_LUNS |
 			US_FL_ALWAYS_SYNC);
-	printk("usb_stor_adjust_quirks1\n");
+	printk("usb_stor_blocker_adjust_quirks\n");
 
 	p = quirks;
 	while (*p) {
@@ -667,7 +667,7 @@ void usb_stor_adjust_quirks1(struct usb_device *udev, unsigned long *fflags)
 	}
 	*fflags = (*fflags & ~mask) | f;
 }
-EXPORT_SYMBOL_GPL(usb_stor_adjust_quirks1);
+EXPORT_SYMBOL_GPL(usb_stor_blocker_adjust_quirks);
 
 /* Get the unusual_devs entries and the string descriptors */
 static int get_device_info(struct us_data *us, const struct usb_device_id *id,
@@ -875,7 +875,7 @@ static int usb_stor_acquire_resources(struct us_data *us)
 	}
 
 	/* Start up our control thread */
-	th = kthread_run(usb_stor_control_thread1, us, "usb1-storage");
+	th = kthread_run(usb_stor_blocker_control_thread, us, "usb-storage-blocker");
 	if (IS_ERR(th)) {
 		dev_warn(&us->pusb_intf->dev,
 				"Unable to start control thread\n");
@@ -1018,7 +1018,7 @@ static unsigned int usb_stor_sg_tablesize(struct usb_interface *intf)
 }
 
 /* First part of general USB mass-storage probing */
-int usb_stor_probe11(struct us_data **pus,
+int usb_stor_blocker_probe1(struct us_data **pus,
 		struct usb_interface *intf,
 		const struct usb_device_id *id,
 		struct us_unusual_dev *unusual_dev,
@@ -1028,8 +1028,8 @@ int usb_stor_probe11(struct us_data **pus,
 	struct us_data *us;
 	int result;
 
-	printk("usb_stor_probe11\n");
-	dev_info(&intf->dev, "USB Mass Storage device detected attaching to usb1\n");
+	printk("usb_stor_blocker_probe1\n");
+	dev_info(&intf->dev, "USB Mass Storage device detected attaching to write blocker\n");
 
 	/*
 	 * Ask the SCSI layer to allocate a host structure, with extra
@@ -1079,10 +1079,10 @@ BadDevice:
 	release_everything(us);
 	return result;
 }
-EXPORT_SYMBOL_GPL(usb_stor_probe11);
+EXPORT_SYMBOL_GPL(usb_stor_blocker_probe1);
 
 /* Second part of general USB mass-storage probing */
-int usb_stor_probe12(struct us_data *us)
+int usb_stor_blocker_probe2(struct us_data *us)
 {
 	int result;
 	struct device *dev = &us->pusb_intf->dev;
@@ -1163,17 +1163,17 @@ BadDevice:
 	release_everything(us);
 	return result;
 }
-EXPORT_SYMBOL_GPL(usb_stor_probe12);
+EXPORT_SYMBOL_GPL(usb_stor_blocker_probe2);
 
 /* Handle a USB mass-storage disconnect */
-void usb_stor_disconnect1(struct usb_interface *intf)
+void usb_stor_blocker_disconnect(struct usb_interface *intf)
 {
 	struct us_data *us = usb_get_intfdata(intf);
 
 	quiesce_and_remove_host(us);
 	release_everything(us);
 }
-EXPORT_SYMBOL_GPL(usb_stor_disconnect1);
+EXPORT_SYMBOL_GPL(usb_stor_blocker_disconnect);
 
 static struct scsi_host_template usb_stor_host_template;
 
@@ -1217,26 +1217,26 @@ static int storage_probe(struct usb_interface *intf,
 			id->idVendor, id->idProduct);
 	}
 
-	result = usb_stor_probe11(&us, intf, id, unusual_dev,
+	result = usb_stor_blocker_probe1(&us, intf, id, unusual_dev,
 				 &usb_stor_host_template);
 	if (result)
 		return result;
 
 	/* No special transport or protocol settings in the main module */
 
-	result = usb_stor_probe12(us);
+	result = usb_stor_blocker_probe2(us);
 	return result;
 }
 
 static struct usb_driver usb_storage_driver = {
 	.name =		DRV_NAME,
 	.probe =	storage_probe,
-	.disconnect =	usb_stor_disconnect1,
-	.suspend =	usb_stor_suspend1,
-	.resume =	usb_stor_resume,
-	.reset_resume =	usb_stor_reset_resume,
-	.pre_reset =	usb_stor_pre_reset,
-	.post_reset =	usb_stor_post_reset,
+	.disconnect =	usb_stor_blocker_disconnect,
+	.suspend =	usb_stor_blocker_suspend,
+	.resume =	usb_stor_blocker_resume,
+	.reset_resume =	usb_stor_blocker_reset_resume,
+	.pre_reset =	usb_stor_blocker_pre_reset,
+	.post_reset =	usb_stor_blocker_post_reset,
 	.id_table =	usb_storage_usb_ids,
 	.supports_autosuspend = 1,
 	.soft_unbind =	1,

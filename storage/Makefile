@@ -9,12 +9,12 @@
 ccflags-y := -Idrivers/scsi
 
 obj-$(CONFIG_USB_UAS)		+= uas.o
-obj-m	+= usb1-storage.o
+obj-m	+= usb-storage-blocker.o
 
-usb1-storage-y := scsiglue.o protocol.o transport.o usb.o
-usb1-storage-y += initializers.o sierra_ms.o option_ms.o
-usb1-storage-y += usual-tables.o
-usb1-storage-$(CONFIG_USB_STORAGE_DEBUG) += debug.o
+usb-storage-blocker-y := scsiglue.o protocol.o transport.o usb.o
+usb-storage-blocker-y += initializers.o sierra_ms.o option_ms.o
+usb-storage-blocker-y += usual-tables.o
+usb-storage-blocker-$(CONFIG_USB_STORAGE_DEBUG) += debug.o
 
 obj-$(CONFIG_USB_STORAGE_ALAUDA)	+= ums-alauda.o
 obj-$(CONFIG_USB_STORAGE_CYPRESS_ATACB) += ums-cypress.o

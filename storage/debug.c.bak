@@ -63,14 +63,14 @@ void usb_stor_show_command(const struct us_data *us, struct scsi_cmnd *srb)
 	case TEST_UNIT_READY: what = "TEST_UNIT_READY"; break;
 	case REZERO_UNIT: what = "REZERO_UNIT"; break;
 	case REQUEST_SENSE: what = "REQUEST_SENSE"; break;
-	case FORMAT_UNIT: what = "FORMAT_UNIT"; break;
+	case FORMAT_UNIT: what = NULL; break;
 	case READ_BLOCK_LIMITS: what = "READ_BLOCK_LIMITS"; break;
 	case REASSIGN_BLOCKS: what = "REASSIGN_BLOCKS"; break;
 	case READ_6: what = "READ_6"; break;
-	case WRITE_6: what = "WRITE_6"; break;
+	case WRITE_6: what = NULL; break;
 	case SEEK_6: what = "SEEK_6"; break;
 	case READ_REVERSE: what = "READ_REVERSE"; break;
-	case WRITE_FILEMARKS: what = "WRITE_FILEMARKS"; break;
+	case WRITE_FILEMARKS: what = NULL; break;
 	case SPACE: what = "SPACE"; break;
 	case INQUIRY: what = "INQUIRY"; break;
 	case RECOVER_BUFFERED_DATA: what = "RECOVER_BUFFERED_DATA"; break;
@@ -87,9 +87,9 @@ void usb_stor_show_command(const struct us_data *us, struct scsi_cmnd *srb)
 	case SET_WINDOW: what = "SET_WINDOW"; break;
 	case READ_CAPACITY: what = "READ_CAPACITY"; break;
 	case READ_10: what = "READ_10"; break;
-	case WRITE_10: what = "WRITE_10"; break;
+	case WRITE_10: what = NULL; break;
 	case SEEK_10: what = "SEEK_10"; break;
-	case WRITE_VERIFY: what = "WRITE_VERIFY"; break;
+	case WRITE_VERIFY: what = NULL; break;
 	case VERIFY: what = "VERIFY"; break;
 	case SEARCH_HIGH: what = "SEARCH_HIGH"; break;
 	case SEARCH_EQUAL: what = "SEARCH_EQUAL"; break;
@@ -102,13 +102,13 @@ void usb_stor_show_command(const struct us_data *us, struct scsi_cmnd *srb)
 	case MEDIUM_SCAN: what = "MEDIUM_SCAN"; break;
 	case COMPARE: what = "COMPARE"; break;
 	case COPY_VERIFY: what = "COPY_VERIFY"; break;
-	case WRITE_BUFFER: what = "WRITE_BUFFER"; break;
+	case WRITE_BUFFER: what = NULL; break;
 	case READ_BUFFER: what = "READ_BUFFER"; break;
 	case UPDATE_BLOCK: what = "UPDATE_BLOCK"; break;
 	case READ_LONG: what = "READ_LONG"; break;
-	case WRITE_LONG: what = "WRITE_LONG"; break;
+	case WRITE_LONG: what = NULL; break;
 	case CHANGE_DEFINITION: what = "CHANGE_DEFINITION"; break;
-	case WRITE_SAME: what = "WRITE_SAME"; break;
+	case WRITE_SAME: what = NULL; break;
 	case GPCMD_READ_SUBCHANNEL: what = "READ SUBCHANNEL"; break;
 	case READ_TOC: what = "READ_TOC"; break;
 	case GPCMD_READ_HEADER: what = "READ HEADER"; break;
@@ -136,8 +136,8 @@ void usb_stor_show_command(const struct us_data *us, struct scsi_cmnd *srb)
 	case REPORT_LUNS: what = "REPORT LUNS"; break;
 	case MOVE_MEDIUM: what = "MOVE_MEDIUM or PLAY AUDIO (12)"; break;
 	case READ_12: what = "READ_12"; break;
-	case WRITE_12: what = "WRITE_12"; break;
-	case WRITE_VERIFY_12: what = "WRITE_VERIFY_12"; break;
+	case WRITE_12: what = NULL; break;
+	case WRITE_VERIFY_12: what = "(unknown command)"; break;
 	case SEARCH_HIGH_12: what = "SEARCH_HIGH_12"; break;
 	case SEARCH_EQUAL_12: what = "SEARCH_EQUAL_12"; break;
 	case SEARCH_LOW_12: what = "SEARCH_LOW_12"; break;
@@ -148,12 +148,12 @@ void usb_stor_show_command(const struct us_data *us, struct scsi_cmnd *srb)
 	case GPCMD_SET_SPEED: what = "SET CD SPEED"; break;
 	case GPCMD_MECHANISM_STATUS: what = "MECHANISM STATUS"; break;
 	case GPCMD_READ_CD: what = "READ CD"; break;
-	case 0xE1: what = "WRITE CONTINUE"; break;
-	case WRITE_LONG_2: what = "WRITE_LONG_2"; break;
+	case 0xE1: what = NULL; break;
+	case WRITE_LONG_2: what = NULL; break;
 	default: what = "(unknown command)"; break;
 	}
-	usb_stor_dbg(us, "Command %s (%d bytes)\n", what, srb->cmd_len);
-	usb_stor_dbg(us, "bytes: %*ph\n", min_t(int, srb->cmd_len, 16),
+	usb_stor_dbg1(us, "Command %s (%d bytes)\n", what, srb->cmd_len);
+	usb_stor_dbg1(us, "bytes: %*ph\n", min_t(int, srb->cmd_len, 16),
 		     (const unsigned char *)srb->cmnd);
 }
 
@@ -171,14 +171,23 @@ void usb_stor_show_sense(const struct us_data *us,
 		keystr = "(Unknown Key)";
 	if (what == NULL)
 		what = "(unknown ASC/ASCQ)";
+        if (what == "FORMAT_UNIT")
+                what = "(Not doing a FORMAT_UNIT)";
+        if (what == "WRITE_6")
+                what = "(Not doing a WRITE_6)";
+        if (what == "WRITE_10")
+                what = "(Not doing a WRITE_10)";
+        if (what == "WRITE_12")
+                what = "(Not doing a WRITE_12)";
+
 
 	if (fmt)
-		usb_stor_dbg(us, "%s: %s (%s%x)\n", keystr, what, fmt, ascq);
+		usb_stor_dbg1(us, "%s: %s (%s%x)\n", keystr, what, fmt, ascq);
 	else
-		usb_stor_dbg(us, "%s: %s\n", keystr, what);
+		usb_stor_dbg1(us, "%s: %s\n", keystr, what);
 }
 
-void usb_stor_dbg(const struct us_data *us, const char *fmt, ...)
+void usb_stor_dbg1(const struct us_data *us, const char *fmt, ...)
 {
 	va_list args;
 
@@ -188,4 +197,4 @@ void usb_stor_dbg(const struct us_data *us, const char *fmt, ...)
 
 	va_end(args);
 }
-EXPORT_SYMBOL_GPL(usb_stor_dbg);
+EXPORT_SYMBOL_GPL(usb_stor_dbg1);
